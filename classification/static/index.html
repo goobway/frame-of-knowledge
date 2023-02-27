@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Teacher Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="server.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Teacher Dashboard</h1>
+  </header>
+  <nav>
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#performance">Performance</a></li>
+      <li><a href="#areas-of-improvement">Areas of Improvement</a></li>
+      <li><a href="#accuracy">Accuracy</a></li>
+      <li><a href="drawing.html">Frame of Knowledge Simulation</a>
+    </ul>
+  </nav>
+  <main>
+    <div>
+      <section id="overview">
+        <h2>Overview</h2>
+        <!-- Overview section content goes here -->
+        <div>
+          <h3>Summary Statistics</h3>
+          <p>Average score: </p>
+          <p>Number of students: </p>
+          <p>Number of students scoring above 90: </p>
+          <p>Number of students scoring below 70: </p>
+        </div>
+        <div style="display: flex; flex-direction: row;">
+          <div>
+            <h3>Student Performance</h3>
+            <canvas id="student-performance"></canvas>
+          </div>
+          <div>
+            <h3>Struggling Areas</h3>
+            <canvas id="struggling-areas"></canvas>
+          </div>
+          <div>
+            <h3>Class Performance</h3>
+            <canvas id="class-performance"></canvas>
+          </div>
+        </div>
+      </section>
+    </div>
+    <section id="performance">
+      <h2>Performance</h2>
+      <!-- Performance section content goes here -->
+    </section>
+    <section id="areas-of-improvement">
+      <h2>Areas of Improvement</h2>
+      <!-- Areas of Improvement section content goes here -->
+    </section>
+    <section id="accuracy">
+      <h2>Accuracy</h2>
+      <!-- Accuracy section content goes here -->
+    </section>
+  </main>
+  <footer>
+    <p>Copyright © 2023 Frame of Knowledge</p>
+  </footer>
+  
