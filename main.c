@@ -5,6 +5,10 @@
 #include <mcp23017.h>
 
 #include <signal.h>
+#include "matrix.h"
+
+void matrix_clear(void);
+void deinitalize_matrix(void);
 
 
 void int_handler(int sig){
@@ -21,11 +25,12 @@ int main(void){
     mcp23017Setup(100, 0x20);
     pinMode(108, OUTPUT);
     // pinMode(5, OUTPUT);
-
+    
     initialize_matrix();
 
-
-    draw_A();
+    // draw_A();
+    // animate_A();
+    test();
 
     while(1){
         
