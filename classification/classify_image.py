@@ -40,6 +40,23 @@ def classify_image(image):
     # Return the predicted class label.
     return np.argmax(output_data)
 
+# Define a function to print the binary matrix of an input image.
+def print_binary_matrix(image):
+    # Convert the image to grayscale.
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # Resize the image to 32x32.
+    resized_image = cv2.resize(gray_image, (32, 32))
+    # Threshold the image to create a binary image.
+    ret, binary_image = cv2.threshold(resized_image, 127, 255, cv2.THRESH_BINARY)
+    # Print the binary matrix.
+    for row in binary_image:
+        for pixel in row:
+            if pixel == 0:
+                print('1', end=' ')
+            else:
+                print('0', end=' ')
+        print('')
+
 # Parse command line arguments.
 parser = argparse.ArgumentParser(description='Classify an image using a TensorFlow Lite model.')
 parser.add_argument('image_file', type=str, help='the path to the input image file (PNG or JPEG format)')
@@ -48,8 +65,14 @@ args = parser.parse_args()
 # Load the input image.
 image = cv2.imread(args.image_file)
 
+# Print the binary matrix.
+print_binary_matrix(image)
+
 # Classify the image.
 class_label = classify_image(image)
 
 # Print the predicted class label.
-print('Class label:', class_label)
+with open('class_list.txt') as f:
+    lines = f.readlines()
+    lns = [line.strip() for line in lines]
+    print('Class label:', lns[class_label])
