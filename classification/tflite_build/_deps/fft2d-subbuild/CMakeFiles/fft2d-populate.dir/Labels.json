@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/CMakeFiles/fft2d-populate"
+		},
+		{
+			"file" : "/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/CMakeFiles/fft2d-populate.rule"
+		},
+		{
+			"file" : "/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/CMakeFiles/fft2d-populate-complete.rule"
+		},
+		{
+			"file" : "/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/fft2d-populate-prefix/src/fft2d-populate-stamp/fft2d-populate-build.rule"
+		},
+		{
+			"file" : "/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/fft2d-populate-prefix/src/fft2d-populate-stamp/fft2d-populate-configure.rule"
+		},
+		{
+			"file" : "/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/fft2d-populate-prefix/src/fft2d-populate-stamp/fft2d-populate-download.rule"
+		},
+		{
+			"file" : "/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/fft2d-populate-prefix/src/fft2d-populate-stamp/fft2d-populate-install.rule"
+		},
+		{
+			"file" : "/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/fft2d-populate-prefix/src/fft2d-populate-stamp/fft2d-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/fft2d-populate-prefix/src/fft2d-populate-stamp/fft2d-populate-patch.rule"
+		},
+		{
+			"file" : "/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/fft2d-populate-prefix/src/fft2d-populate-stamp/fft2d-populate-test.rule"
+		},
+		{
+			"file" : "/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/fft2d-populate-prefix/src/fft2d-populate-stamp/fft2d-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"fft2d-populate"
+		],
+		"name" : "fft2d-populate"
+	}
+}

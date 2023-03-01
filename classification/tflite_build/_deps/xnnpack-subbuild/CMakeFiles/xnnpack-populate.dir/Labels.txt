@@ -1,0 +1,14 @@
+# Target labels
+ xnnpack-populate
+# Source files and their labels
+/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/xnnpack-subbuild/CMakeFiles/xnnpack-populate
+/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/xnnpack-subbuild/CMakeFiles/xnnpack-populate.rule
+/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/xnnpack-subbuild/CMakeFiles/xnnpack-populate-complete.rule
+/home/calista/School/frame-of-knowledge/classification/tflite_build/src/xnnpack-populate-stamp/xnnpack-populate-build.rule
+/home/calista/School/frame-of-knowledge/classification/tflite_build/src/xnnpack-populate-stamp/xnnpack-populate-configure.rule
+/home/calista/School/frame-of-knowledge/classification/tflite_build/src/xnnpack-populate-stamp/xnnpack-populate-download.rule
+/home/calista/School/frame-of-knowledge/classification/tflite_build/src/xnnpack-populate-stamp/xnnpack-populate-install.rule
+/home/calista/School/frame-of-knowledge/classification/tflite_build/src/xnnpack-populate-stamp/xnnpack-populate-mkdir.rule
+/home/calista/School/frame-of-knowledge/classification/tflite_build/src/xnnpack-populate-stamp/xnnpack-populate-patch.rule
+/home/calista/School/frame-of-knowledge/classification/tflite_build/src/xnnpack-populate-stamp/xnnpack-populate-test.rule
+/home/calista/School/frame-of-knowledge/classification/tflite_build/src/xnnpack-populate-stamp/xnnpack-populate-update.rule

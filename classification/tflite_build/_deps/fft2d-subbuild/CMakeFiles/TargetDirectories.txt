@@ -1,0 +1,3 @@
+/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/CMakeFiles/fft2d-populate.dir
+/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/CMakeFiles/edit_cache.dir
+/home/calista/School/frame-of-knowledge/classification/tflite_build/_deps/fft2d-subbuild/CMakeFiles/rebuild_cache.dir
