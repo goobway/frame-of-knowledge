@@ -26,7 +26,7 @@ int main() {
   // Get the output tensor values
   float* output = interpreter->typed_output_tensor<float>(0);
   // Print the output tensor values
-  for (int i = 0; i < output_tensor->bytes / sizeof(float); i++) {
+  for (int i = 0; i < interpreter->outputs()[0]->bytes / sizeof(float); i++) {
     std::cout << output[i] << " ";
   }
   
