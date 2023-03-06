@@ -1,7 +1,9 @@
 /* Contains all of matrix functions */
 
-#include "matrix.h"
+#include "matrix.hpp"
 #include "ws2811.h"
+#include <unistd.h>
+#include <iostream>
 
 #define TARGET_FREQ     WS2811_TARGET_FREQ
 #define GPIO_PIN        18
@@ -134,7 +136,7 @@ void draw_matrix(unsigned char mat[][32]){
                         position = (512 + 16*x) + (31 - y);
                     }
                 }
-                ledstring.channel[0].leds[position] = dotcolors[0];
+                ledstring.channel[0].leds[position] = dotcolors[2];
             }
                 
         }
@@ -149,17 +151,17 @@ void draw_A(void){
     ws2811_render(&ledstring);
 }
 
-void animate_A(void){
-    unsigned char i;
-    for (i=0; i<161; i++){
-        ledstring.channel[0].leds[ANIMATE_A[i]] = dotcolors[0];
-        if (i%2 != 0){
-            ws2811_render(&ledstring);
-            usleep(10000);
-        }
-    }
-    ws2811_render(&ledstring);
-}
+// void animate_A(void){
+//     unsigned char i;
+//     for (i=0; i<161; i++){
+//         ledstring.channel[0].leds[ANIMATE_A[i]] = dotcolors[0];
+//         if (i%2 != 0){
+//             ws2811_render(&ledstring);
+//             usleep(10000);
+//         }
+//     }
+//     ws2811_render(&ledstring);
+// }
 
 void test(void){
     int i;
