@@ -5,7 +5,7 @@
 
 using namespace std;
 
-unsigned char PRINT_A[32][32] = 
+unsigned char PRINT_A[32][32] =
     {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -39,31 +39,42 @@ unsigned char PRINT_A[32][32] =
         {0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    };
+};
 
-int main() {
+int main()
+{
     char buffer[1024];
 
     // convert the PRINT_A array into a string
-    std::string str(reinterpret_cast<const char*>(PRINT_A), sizeof(PRINT_A));
+    std::string str(reinterpret_cast<const char *>(PRINT_A), sizeof(PRINT_A));
 
-    string input = " 000 ";
-    
+    // convert PRINT_A to the input string
+    string input_string = "";
+    for (int i = 0; i < 32; i++)
+    {
+        for (int j = 0; j < 32; j++)
+        {
+            input_string += to_string(PRINT_A[i][j]);
+        }
+    }
+
     // create a pipe to communicate with the Python program
-    FILE* pipe = popen("python3 classify.py", "w");
+    FILE *pipe = popen("python3 class.py", "w");
 
     // check if the pipe was created successfully
-    if (!pipe) {
+    if (!pipe)
+    {
         cerr << "Failed to create pipe" << endl;
         return 1;
     }
 
     // send the input to the Python program
-    fprintf(pipe, "%s\n", input.c_str());
+    fprintf(pipe, "%s\n", input_string.c_str());
     fflush(pipe);
 
     // read the output from the Python program
-    while (fgets(buffer, 1024, pipe)) {
+    while (fgets(buffer, 1024, pipe))
+    {
         cout << buffer;
     }
 
