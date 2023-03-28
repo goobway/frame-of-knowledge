@@ -1,0 +1,33 @@
+/home/sdp19/sdp/tflite/04_Linux_Installation/main.cpp:14:8: error: expected constructor, destructor, or type conversion before '(' token
+   14 | builder(&interpreter);
+      |        ^
+/home/sdp19/sdp/tflite/04_Linux_Installation/main.cpp:15:1: error: 'interpreter' does not name a type
+   15 | interpreter->AllocateTensors();
+      | ^~~~~~~~~~~
+/home/sdp19/sdp/tflite/04_Linux_Installation/main.cpp:21:1: error: expected unqualified-id before 'while'
+   21 | while (std::getline(file, line)) {
+      | ^~~~~
+/home/sdp19/sdp/tflite/04_Linux_Installation/main.cpp:29:1: error: 'image_file' does not name a type
+   29 | image_file.read(reinterpret_cast<char*>(image_data.data()), image_data.size());
+      | ^~~~~~~~~~
+/home/sdp19/sdp/tflite/04_Linux_Installation/main.cpp:33:1: error: expected unqualified-id before 'for'
+   33 | for (int i = 0; i < 28; i++) {
+      | ^~~
+/home/sdp19/sdp/tflite/04_Linux_Installation/main.cpp:33:17: error: 'i' does not name a type
+   33 | for (int i = 0; i < 28; i++) {
+      |                 ^
+/home/sdp19/sdp/tflite/04_Linux_Installation/main.cpp:33:25: error: 'i' does not name a type
+   33 | for (int i = 0; i < 28; i++) {
+      |                         ^
+/home/sdp19/sdp/tflite/04_Linux_Installation/main.cpp:52:1: error: expected unqualified-id before 'if'
+   52 | if (input_type != kTfLiteUInt8) {
+      | ^~
+/home/sdp19/sdp/tflite/04_Linux_Installation/main.cpp:58:1: error: expected unqualified-id before 'if'
+   58 | if (resized_image_data.size() != input_height * input_width * input_channels) {
+      | ^~
+/home/sdp19/sdp/tflite/04_Linux_Installation/main.cpp:64:7: error: expected constructor, destructor, or type conversion before '(' token
+   64 | memcpy(interpreter->typed_input_tensor<uint8_t>(0), resized_image_data.data(), resized_image_data.size());
+      |       ^
+make[2]: *** [CMakeFiles/TFLiteCheck.dir/build.make:82: CMakeFiles/TFLiteCheck.dir/main.cpp.o] Error 1
+make[1]: *** [CMakeFiles/Makefile2:95: CMakeFiles/TFLiteCheck.dir/all] Error 2
+make: *** [Makefile:103: all] Error 2
