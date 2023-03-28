@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/TFLiteCheck.dir/main.cpp.o -o TFLiteCheck  -Wl,-rpath,/home/sdp19/sdp/classification/../tflite-dist/libs/linux_x64 ../../tflite-dist/libs/linux_x64/libtensorflowlite.so 

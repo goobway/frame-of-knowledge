@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/sdp19/sdp/classification/main.cpp
+fstream
+-
+iostream
+-
+vector
+-
+tensorflow/lite/interpreter.h
+/home/sdp19/sdp/classification/tensorflow/lite/interpreter.h
+tensorflow/lite/kernels/register.h
+/home/sdp19/sdp/classification/tensorflow/lite/kernels/register.h
+tensorflow/lite/model.h
+/home/sdp19/sdp/classification/tensorflow/lite/model.h
+

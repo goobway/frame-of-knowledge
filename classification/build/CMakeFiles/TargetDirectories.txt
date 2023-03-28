@@ -1,0 +1,3 @@
+/home/sdp19/sdp/classification/build/CMakeFiles/rebuild_cache.dir
+/home/sdp19/sdp/classification/build/CMakeFiles/edit_cache.dir
+/home/sdp19/sdp/classification/build/CMakeFiles/TFLiteCheck.dir
