@@ -104,16 +104,16 @@ int main(void){
         // digitalWrite(4, LOW);
         // usleep(13);
 
-        for (i=100; i<116; i++){
-            val = digitalRead(i);
-            if (val == 0){
-                cout << "collector: " << i << "\n";
-            }
-        }
+        // for (i=100; i<116; i++){
+        //     val = digitalRead(i);
+        //     if (val == 0){
+        //         cout << "collector: " << i << "\n";
+        //     }
+        // }
 
-        cout << "\n";
+        // cout << "\n";
         
-        usleep(500000);
+        // usleep(500000);
 
         // if (digitalRead(test) == 0){
         //     cout << "collector: " << test;
@@ -126,7 +126,7 @@ int main(void){
         // }
         
 
-        continue;
+        // continue;
 
         // wait for user to proceed
 
