@@ -3,6 +3,7 @@
 #include "display.hpp"
 #include "upper.hpp"
 #include "numbers.hpp"
+#include "ssd1306.h"
 #include "ws2811.h"
 #include <unistd.h>
 #include <iostream>
@@ -26,6 +27,7 @@
 #define PURPLE 22
 #define PINK 21
 
+SSD1306 myDisplay;
 
 ws2811_t ledstring =
 {
@@ -63,6 +65,24 @@ ws2811_led_t dotcolors[] =
 };
 
 
+void clear_OLED(void){
+    myDisplay.clearDisplay();
+}
+
+void color_OLED(void){
+    myDisplay.textDisplay("Select a color to continue.");
+}
+
+void welcome(void){
+    // Initialize OLED display and print messages
+    myDisplay.initDisplay();
+    myDisplay.clearDisplay();
+    myDisplay.textDisplay("Welcome to");
+    myDisplay.textDisplay("Frame of Knowledge");
+    myDisplay.textDisplay("");
+    
+}
+
 void initialize_matrix(void){
     ws2811_init(&ledstring);
 }
@@ -79,7 +99,7 @@ void clear_matrix(void){
 }
 
 
-void draw(unsigned char mat[][32], unsigned int color){
+void draw(unsigned char mat[][32], unsigned char color){
     int position;
     for (int y=0; y<32; y++){
         for (int x=0; x<32; x++){
@@ -106,14 +126,37 @@ void draw(unsigned char mat[][32], unsigned int color){
     ws2811_render(&ledstring);
 }
 
-void animate(unsigned int sequence[], unsigned int color){
+void animate(unsigned int sequence[], unsigned char color, unsigned char length){
     unsigned char i;
-    for (i=0; i<168; i++){
+    for (i=0; i<length; i++){
         ledstring.channel[0].leds[sequence[i]] = dotcolors[color];
         if (i%2 != 0){
             ws2811_render(&ledstring);
-            usleep(10000);
+            usleep(20000);
         }
     }
     ws2811_render(&ledstring);
+}
+
+void PROMPT(unsigned char mat[][32], unsigned int sequence[], unsigned char length, unsigned char color){
+    // static image
+    clear_OLED();
+    myDisplay.textDisplay("You will draw the");
+    myDisplay.textDisplay("shown item.");
+    draw(mat, color);
+    usleep(3000000);
+    // animated image
+    clear_matrix();
+    clear_OLED();
+    myDisplay.textDisplay("Here is how you write it.");
+    unsigned char i;
+    for (i=0; i<3; i++){
+        animate(sequence, color, length);
+        usleep(1000000);
+        clear_matrix();
+    }
+    // try youself
+    clear_OLED();
+    myDisplay.textDisplay("Try it yourself!");
+    usleep(3000000);
 }
