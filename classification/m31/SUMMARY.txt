@@ -1,0 +1,38 @@
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv2d (Conv2D)             (None, 28, 28, 16)        160       
+                                                                 
+ max_pooling2d (MaxPooling2D  (None, 14, 14, 16)       0         
+ )                                                               
+                                                                 
+ conv2d_1 (Conv2D)           (None, 14, 14, 32)        4640      
+                                                                 
+ max_pooling2d_1 (MaxPooling  (None, 7, 7, 32)         0         
+ 2D)                                                             
+                                                                 
+ conv2d_2 (Conv2D)           (None, 7, 7, 64)          18496     
+                                                                 
+ max_pooling2d_2 (MaxPooling  (None, 3, 3, 64)         0         
+ 2D)                                                             
+                                                                 
+ flatten (Flatten)           (None, 576)               0         
+                                                                 
+ dense (Dense)               (None, 128)               73856     
+                                                                 
+ dense_1 (Dense)             (None, 85)                10965     
+                                                                 
+=================================================================
+Total params: 108,117
+Trainable params: 108,117
+Non-trainable params: 0
+_________________________________________________________________
+
+Total Training Samples: 680000
+Total Testing Samples: 170000
+Samples per Class: 10000
+Train/Test Split: 0.2
+Epochs: 10
+
+Test accuarcy: 89.43%
