@@ -15,6 +15,41 @@ float bilinear_interpolate(const std::vector<std::vector<int>> &input, float x, 
     return (y2 - y) * r1 + (y - y1) * r2;
 }
 
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+std::vector<std::vector<float>> normalize(const std::vector<std::vector<float>>& input) {
+    const int numRows = 28;
+    const int numCols = 28;
+
+    // Find the minimum and maximum values in the input vector
+    float minValue = input[0][0];
+    float maxValue = input[0][0];
+
+    for (int i = 0; i < numRows; ++i) {
+        for (int j = 0; j < numCols; ++j) {
+            minValue = std::min(minValue, input[i][j]);
+            maxValue = std::max(maxValue, input[i][j]);
+        }
+    }
+
+    // Calculate the range (max - min) of the input values
+    float range = maxValue - minValue;
+
+    // Create a new 2D vector to store the normalized values
+    std::vector<std::vector<float>> normalized(numRows, std::vector<float>(numCols));
+
+    // Normalize the input values by subtracting the minimum and dividing by the range
+    for (int i = 0; i < numRows; ++i) {
+        for (int j = 0; j < numCols; ++j) {
+            normalized[i][j] = (input[i][j] - minValue) / range;
+        }
+    }
+
+    return normalized;
+}
+
 int main()
 {
     // Your input code here
