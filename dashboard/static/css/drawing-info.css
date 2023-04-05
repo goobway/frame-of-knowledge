@@ -1,0 +1,28 @@
+/* drawing-info.css */
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  header {
+    background-color: #f1f1f1;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  nav a {
+    margin: 0 10px;
+    text-decoration: none;
+  }
+  
+  #drawing-info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  #drawing-img {
+    max-width: 300px;
+    max-height: 300px;
+    border:
+  }  

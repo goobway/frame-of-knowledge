@@ -62,4 +62,27 @@ body {
     padding: 20px;
     text-align: center;
   }
+
+  .student-profiles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  .student-profile {
+    flex-basis: 300px;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .submitted-drawing {
+    max-width: 150px;
+    max-height: 150px;
+    border: 1px solid #ccc;
+    margin: 5px;
+  }
   

@@ -5,7 +5,9 @@
   <meta charset="utf-8">
   <title>Teacher Dashboard</title>
   <link rel="stylesheet" href="css/styles.css">
-  <script src="server.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../server.js"></script>
+  <script src="js/app.js"></script>
 </head>
 
 <body>
@@ -25,44 +27,67 @@
     <div>
       <section id="overview">
         <h2>Overview</h2>
-        <!-- Overview section content goes here -->
-        <div>
-          <h3>Summary Statistics</h3>
-          <p>Average score: </p>
-          <p>Number of students: </p>
-          <p>Number of students scoring above 90: </p>
-          <p>Number of students scoring below 70: </p>
-        </div>
-        <div style="display: flex; flex-direction: row;">
-          <div>
-            <h3>Student Performance</h3>
-            <canvas id="student-performance"></canvas>
+        <div class="student-profiles">
+          <div class="student-profile">
+            <h3>Calista Greenway</h3>
+            <p>Grade: Senior</p>
+            <p>Teacher: Professor Duarte</p>
+            <p>Overall Score: 85</p>
+            <p>Strengths: Numbers</p>
+            <p>Areas of Improvement: Doodles</p>
           </div>
-          <div>
-            <h3>Struggling Areas</h3>
-            <canvas id="struggling-areas"></canvas>
+          <div class="student-profile">
+            <h3>Nick Borda</h3>
+            <p>Grade: Senior</p>
+            <p>Teacher: Professor Duarte</p>
+            <p>Overall Score: 90</p>
+            <p>Strengths: Numbers, Doodles</p>
+            <p>Areas of Improvement: Letters</p>
           </div>
-          <div>
-            <h3>Class Performance</h3>
-            <canvas id="class-performance"></canvas>
+          <div class="student-profile">
+            <h3>Maia Esty</h3>
+            <p>Grade: Senior</p>
+            <p>Teacher: Professor Duarte</p>
+            <p>Overall Score: 95</p>
+            <p>Strengths: Numbers, Letters</p>
+            <p>Areas of Improvement: Doodles</p>
           </div>
+          <div class="student-profile">
+            <h3>Chris Blangiardi</h3>
+            <p>Grade: Senior</p>
+            <p>Teacher: Professor Duarte</p>
+            <p>Overall Score: 100</p>
+            <p>Strengths: Numbers, Letters, Doodles</p>
+            <p>Areas of Improvement: None</p>
+          </div>
+          <!-- Add more student profiles here -->
         </div>
       </section>
+
     </div>
     <section id="performance">
       <h2>Performance</h2>
-      <!-- Performance section content goes here -->
+      <div>
+        <h3>Student Progress</h3>
+        <canvas id="student-progress"></canvas>
+      </div>
     </section>
     <section id="areas-of-improvement">
       <h2>Areas of Improvement</h2>
-      <!-- Areas of Improvement section content goes here -->
+      <canvas id="areas-improvement-chart"></canvas>
     </section>
     <section id="accuracy">
       <h2>Accuracy</h2>
       <!-- Accuracy section content goes here -->
     </section>
+    <section id="submitted-drawings">
+      <h2>Submitted Drawings</h2>
+      <div id="submitted-drawings-container"></div>
+    </section>
   </main>
   <footer>
     <p>Copyright © 2023 Frame of Knowledge</p>
   </footer>
-  
+  <script>
+    // Get the drawing data from local storage
+    const drawingData = localStorage.getItem('drawing');
