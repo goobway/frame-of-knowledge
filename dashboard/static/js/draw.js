@@ -45,15 +45,33 @@ function stopDraw() {
 
 // Submit drawing and convert to matrix
 function submit() {
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    const matrix = [];
-    for (let i = 0; i < 1024; i++) {
-        matrix.push(data[i * 4] / 255);
-    }
-    console.log(matrix);
+    // Get the drawing data from the canvas
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    // Create a temporary canvas and context to convert the image data to a data URL
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCtx.putImageData(imageData, 0, 0);
+    const dataURL = tempCanvas.toDataURL('image/png');
+
+    // Remove the "data:image/png;base64," part from the data URL
+    const base64ImageData = dataURL.split(',')[1];
+
+    // Get the existing drawings from local storage
+    let drawings = JSON.parse(localStorage.getItem('drawings')) || [];
+
+    // Add the new drawing to the array
+    drawings.push(base64ImageData);
+
+    // Store the updated drawings array in local storage
+    localStorage.setItem('drawings', JSON.stringify(drawings));
+
     clear(); // clear the canvas
     generatePrompt(); // generate a new prompt
 }
+
 
 // Clear canvas
 function clear() {
