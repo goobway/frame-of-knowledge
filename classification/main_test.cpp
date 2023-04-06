@@ -19,6 +19,28 @@ cv::Mat preprocess(unsigned char input[32][32]) {
     return floatMat;
 }
 
+
+#include <CImg.h>
+using namespace cimg_library;
+
+CImg<float> preprocess(unsigned char input[32][32]) {
+    // Convert the input array to a CImg<unsigned char>
+    CImg<unsigned char> inputImg(input[0], 32, 32);
+
+    // Resize the image to 28x28
+    inputImg.resize(28, 28);
+
+    // Convert the resized image to a CImg<float>
+    CImg<float> floatImg = inputImg;
+
+    // Normalize the pixel values to be between 0 and 1
+    floatImg /= 255.0f;
+
+    // Return the float array
+    return floatImg;
+}
+
+
 // sudo apt install build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
 // git clone https://github.com/opencv/opencv.git
 // cd opencv
