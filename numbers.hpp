@@ -41,4 +41,6 @@ extern unsigned char PRINT_9[32][32];
 extern unsigned int ANIMATE_9[];
 extern unsigned char A9_length;
 
+extern unsigned char USED_MATRIX[32][32];
+
 #endif

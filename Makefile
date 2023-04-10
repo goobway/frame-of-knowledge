@@ -8,7 +8,7 @@ INCLUDES = -I/home/sdp19/rpi_ws281x
 LIBS= -lws2811 -lwiringPi -lm
 
 # building the file
-SOURCES = main.cpp display.cpp numbers.cpp upper.cpp ssd1306.cpp
+SOURCES = main.cpp display.cpp numbers.cpp upper.cpp lower.cpp sketches.cpp ssd1306.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE = main
 

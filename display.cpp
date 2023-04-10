@@ -2,6 +2,7 @@
 
 #include "display.hpp"
 #include "upper.hpp"
+#include "lower.hpp"
 #include "numbers.hpp"
 #include "ssd1306.h"
 #include "ws2811.h"
@@ -62,6 +63,7 @@ ws2811_led_t dotcolors[] =
     0x00000020,  // blue
     0x00100010,  // purple
     0x00200010,  // pink
+    0xEEEEEEEE,  // white
 };
 
 
@@ -69,8 +71,8 @@ void clear_OLED(void){
     myDisplay.clearDisplay();
 }
 
-void color_OLED(void){
-    myDisplay.textDisplay("Select a color to continue.");
+void SC_PROMPT(void){
+    myDisplay.textDisplay("Select a color to continue");
 }
 
 void welcome(void){
@@ -138,7 +140,12 @@ void animate(unsigned int sequence[], unsigned char color, unsigned char length)
     ws2811_render(&ledstring);
 }
 
-void PROMPT(unsigned char mat[][32], unsigned int sequence[], unsigned char length, unsigned char color){
+void update_matrix(int location, unsigned char color){
+    ledstring.channel[0].leds[location] = dotcolors[color];
+    ws2811_render(&ledstring);
+}
+
+void PROMPT(unsigned char mat[][32], unsigned int sequence[], unsigned char length, unsigned char color, unsigned int pic){
     // static image
     clear_OLED();
     myDisplay.textDisplay("You will draw the");
@@ -147,16 +154,18 @@ void PROMPT(unsigned char mat[][32], unsigned int sequence[], unsigned char leng
     usleep(3000000);
     // animated image
     clear_matrix();
-    clear_OLED();
-    myDisplay.textDisplay("Here is how you write it.");
-    unsigned char i;
-    for (i=0; i<3; i++){
-        animate(sequence, color, length);
-        usleep(1000000);
-        clear_matrix();
+    if (pic == 0){
+        clear_OLED();
+        myDisplay.textDisplay("Here is how to write it.");
+        unsigned char i;
+        for (i=0; i<3; i++){
+            animate(sequence, color, length);
+            usleep(1000000);
+            clear_matrix();
     }
-    // try youself
+    }
+    
+    // try youself (put a while loop)
     clear_OLED();
     myDisplay.textDisplay("Try it yourself!");
-    usleep(3000000);
 }
