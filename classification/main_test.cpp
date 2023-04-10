@@ -1,52 +1,37 @@
 #include <opencv2/opencv.hpp>
+#include <vector>
+#include <iostream>
 
-cv::Mat preprocess(unsigned char input[32][32]) {
-    // Convert the input array to a cv::Mat
-    cv::Mat inputMat(32, 32, CV_8UC1, input);
+std::vector<std::vector<float>> unsignedCharToFloat(const unsigned char src[32][32], int rows, int cols) {
+    cv::Mat src_mat(rows, cols, CV_8UC1, (void*)src);
+    cv::Mat dst_mat;
+    cv::resize(src_mat, dst_mat, cv::Size(28, 28), 0, 0, cv::INTER_NEAREST);
 
-    // Resize the image to 28x28
-    cv::Mat resizedMat;
-    cv::resize(inputMat, resizedMat, cv::Size(28, 28));
-
-    // Convert the resized image to a float array
-    cv::Mat floatMat;
-    resizedMat.convertTo(floatMat, CV_32FC1);
-
-    // Normalize the pixel values to be between 0 and 1
-    floatMat /= 255.0;
-
-    // Return the float array
-    return floatMat;
+    std::vector<std::vector<float>> dst(dst_mat.rows);
+    for (int i = 0; i < dst_mat.rows; i++) {
+        dst[i].resize(dst_mat.cols);
+        for (int j = 0; j < dst_mat.cols; j++) {
+            dst[i][j] = dst_mat.at<unsigned char>(i, j) / 255.0f;
+        }
+    }
+    return dst;
 }
 
+int main() {
+    unsigned char PRINT_A[32][32] = 
+    {
+        // ...
+    };
 
-#include <CImg.h>
-using namespace cimg_library;
+    std::vector<std::vector<float>> image = unsignedCharToFloat(PRINT_A, 32, 32);
 
-CImg<float> preprocess(unsigned char input[32][32]) {
-    // Convert the input array to a CImg<unsigned char>
-    CImg<unsigned char> inputImg(input[0], 32, 32);
-
-    // Resize the image to 28x28
-    inputImg.resize(28, 28);
-
-    // Convert the resized image to a CImg<float>
-    CImg<float> floatImg = inputImg;
-
-    // Normalize the pixel values to be between 0 and 1
-    floatImg /= 255.0f;
-
-    // Return the float array
-    return floatImg;
+    for (const auto &row : image)
+    {
+        for (float value : row)
+        {
+            std::cout << value << ' ';
+        }
+        std::cout << '\n';
+    }
+    return 0;
 }
-
-
-// sudo apt install build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-// git clone https://github.com/opencv/opencv.git
-// cd opencv
-// mkdir build
-// cd build
-// cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
-// make -j$(nproc)
-// sudo make install
-// pkg-config --modversion opencv
