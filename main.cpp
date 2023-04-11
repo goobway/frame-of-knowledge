@@ -18,6 +18,8 @@ using namespace std;
 #include "lower.hpp"
 #include "sketches.hpp"
 
+#include "classify_input.hpp"
+
 #define CLEAR 29
 #define SUBMIT 28
 #define RED 27
