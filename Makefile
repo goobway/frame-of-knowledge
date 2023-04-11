@@ -3,7 +3,7 @@ CC = g++
 
 # compiler flags
 # -Wall flag turns on compiler warnings
-CFLAGS = -Wall
+CFLAGS = -Wall -w
 INCLUDES = -I/home/sdp19/rpi_ws281x
 LIBS= -lws2811 -lwiringPi -lm
 

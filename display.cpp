@@ -1,34 +1,18 @@
 /* Contains all of matrix functions */
+#include <iostream>
+#include <unistd.h>
 
 #include "display.hpp"
-#include "upper.hpp"
-#include "lower.hpp"
-#include "numbers.hpp"
-#include "ssd1306.h"
 #include "ws2811.h"
-#include <unistd.h>
-#include <iostream>
 
 #define TARGET_FREQ     WS2811_TARGET_FREQ
 #define GPIO_PIN        18
 #define DMA             10
 #define STRIP_TYPE      WS2811_STRIP_GRB
-
 #define WIDTH           32
 #define HEIGHT          32
 #define LED_COUNT       HEIGHT*WIDTH
 
-#define CLEAR 29
-#define SUBMIT 28
-#define RED 27
-#define ORANGE 26
-#define YELLOW 25
-#define GREEN 24
-#define BLUE 23
-#define PURPLE 22
-#define PINK 21
-
-SSD1306 myDisplay;
 
 ws2811_t ledstring =
 {
@@ -66,45 +50,29 @@ ws2811_led_t dotcolors[] =
     0xEEEEEEEE,  // white
 };
 
-
-void clear_OLED(void){
-    myDisplay.clearDisplay();
-}
-
-void SC_PROMPT(void){
-    myDisplay.textDisplay("Select a color to continue");
-}
-
-void welcome(void){
-    // Initialize OLED display and print messages
-    myDisplay.initDisplay();
-    myDisplay.clearDisplay();
-    myDisplay.textDisplay("Welcome to");
-    myDisplay.textDisplay("Frame of Knowledge");
-    myDisplay.textDisplay("");
-    
-}
-
-void initialize_matrix(void){
+// allows for the matrix to be turned on
+void matrix_init(void){
     ws2811_init(&ledstring);
 }
 
-void deinitalize_matrix(void){
+// resets all things turned on from init
+void matrix_deinit(void){
     ws2811_fini(&ledstring);
 }
 
+// turns off all LEDs
 void clear_matrix(void){
-    for (int i=0; i<LED_COUNT; i++){
+    for (unsigned int i=0; i<LED_COUNT; i++){
         ledstring.channel[0].leds[i] = 0;
     }
     ws2811_render(&ledstring);
 }
 
-
-void draw(unsigned char mat[][32], unsigned char color){
+// print a static image to matrix
+void static_image(unsigned char mat[][32], unsigned char color){
     int position;
-    for (int y=0; y<32; y++){
-        for (int x=0; x<32; x++){
+    for (int y=0; y<HEIGHT; y++){
+        for (int x=0; x<WIDTH; x++){
             if (mat[y][x] == 1){
                 if (y < 16){
                     if(x%2 == 0){
@@ -128,44 +96,26 @@ void draw(unsigned char mat[][32], unsigned char color){
     ws2811_render(&ledstring);
 }
 
-void animate(unsigned int sequence[], unsigned char color, unsigned char length){
-    unsigned char i;
-    for (i=0; i<length; i++){
-        ledstring.channel[0].leds[sequence[i]] = dotcolors[color];
-        if (i%2 != 0){
-            ws2811_render(&ledstring);
-            usleep(20000);
+// aniamte given image on matrix
+void animated_image(unsigned int sequence[], unsigned char length, unsigned char color){
+    for (unsigned int i=0; i<3; i++){
+        for (unsigned char i=0; i<length; i++){
+            ledstring.channel[0].leds[sequence[i]] = dotcolors[color];
+            if (i%2 != 0){
+                ws2811_render(&ledstring);
+                usleep(20000);
+            }
         }
+        ws2811_render(&ledstring);
+        usleep(1000000);
+        clear_matrix();
     }
-    ws2811_render(&ledstring);
+    
+    
 }
 
+// turn on LEDs from finger tracking
 void update_matrix(int location, unsigned char color){
     ledstring.channel[0].leds[location] = dotcolors[color];
     ws2811_render(&ledstring);
-}
-
-void PROMPT(unsigned char mat[][32], unsigned int sequence[], unsigned char length, unsigned char color, unsigned int pic){
-    // static image
-    clear_OLED();
-    myDisplay.textDisplay("You will draw the");
-    myDisplay.textDisplay("shown item.");
-    draw(mat, color);
-    usleep(3000000);
-    // animated image
-    clear_matrix();
-    if (pic == 0){
-        clear_OLED();
-        myDisplay.textDisplay("Here is how to write it.");
-        unsigned char i;
-        for (i=0; i<3; i++){
-            animate(sequence, color, length);
-            usleep(1000000);
-            clear_matrix();
-    }
-    }
-    
-    // try youself (put a while loop)
-    clear_OLED();
-    myDisplay.textDisplay("Try it yourself!");
 }
