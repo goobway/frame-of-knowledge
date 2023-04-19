@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cstdlib>
+#include <string>
+#include <fstream>
+#include <vector>
 using namespace std;
 
 
@@ -121,7 +124,8 @@ void pink_int(){
 }
 
 // gives the correct prompt
-void prompt_selection(unsigned char p_num){     
+string prompt_selection(unsigned char p_num){  
+    string result;   
     switch(p_num){
         case 0:
             myDisplay.textDisplay("You will write the number 0.");
@@ -140,6 +144,8 @@ void prompt_selection(unsigned char p_num){
             myDisplay.textDisplay("number 0.");
             animated_image(ANIMATE_0, A0_length, color);
             usleep(1000000);
+
+            result = "0";
             
             break;
         case 10:
@@ -159,6 +165,8 @@ void prompt_selection(unsigned char p_num){
             myDisplay.textDisplay("letter A.");
             animated_image(ANIMATE_A, AA_length, color);
             usleep(1000000);
+
+            result = "A";
             
             break;
         case 11:
@@ -168,7 +176,7 @@ void prompt_selection(unsigned char p_num){
             clear_matrix();
             myDisplay.clearDisplay();
 
-            myDisplay.textDisplay("This is an (B)anana.");
+            myDisplay.textDisplay("This is a (B)anana.");
             static_image(banana, color);
             usleep(3000000);
             clear_matrix();
@@ -178,28 +186,265 @@ void prompt_selection(unsigned char p_num){
             myDisplay.textDisplay("letter B.");
             animated_image(ANIMATE_B, AB_length, color);
             usleep(1000000);
-        
-            break;
-        // case 12:
-        //     myDisplay.textDisplay("You will write the letter C.");
-        //     static_image(PRINT_C, color);
-        //     usleep(3000000);
-        //     clear_matrix();
-        //     myDisplay.clearDisplay();
 
-        //     myDisplay.textDisplay("This is an (B)anana.");
-        //     static_image(banana, color);
-        //     usleep(3000000);
-        //     clear_matrix();
-        //     myDisplay.clearDisplay();
-
-        //     myDisplay.textDisplay("This is how to write the");
-        //     myDisplay.textDisplay("letter C.");
-        //     animated_image(ANIMATE_C, AC_length, color);
-        //     usleep(1000000);
+            result = "B";
             
-        //     break;
+            break;
+        case 12:
+            myDisplay.textDisplay("You will write the letter C.");
+            static_image(PRINT_C, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is a (C)hair.");
+            static_image(chair, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter C.");
+            animated_image(ANIMATE_C, AC_length, color);
+            usleep(1000000);
+
+            result = "C";
+            
+            break;
+        case 13:
+            myDisplay.textDisplay("You will write the letter D.");
+            static_image(PRINT_D, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is a (D)oor.");
+            static_image(door, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter D.");
+            animated_image(ANIMATE_D, AD_length, color);
+            usleep(1000000);
+
+            result = "D";
+            
+            break;
+        case 14:
+            myDisplay.textDisplay("You will write the letter E.");
+            static_image(PRINT_E, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is an (E)nvelope.");
+            static_image(envelope, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter E.");
+            animated_image(ANIMATE_E, AE_length, color);
+            usleep(1000000);
+
+            result = "E";
+            
+            break;
+        case 15:
+            myDisplay.textDisplay("You will write the letter F.");
+            static_image(PRINT_F, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is a (F)ish.");
+            static_image(fish, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter F.");
+            animated_image(ANIMATE_F, AF_length, color);
+            usleep(1000000);
+
+            result = "F";
+            
+            break;
+        case 16:
+            myDisplay.textDisplay("You will write the letter G.");
+            static_image(PRINT_G, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is a (G)iraffe.");
+            static_image(giraffe, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter G.");
+            animated_image(ANIMATE_G, AG_length, color);
+            usleep(1000000);
+
+            result = "G";
+            
+            break;
+        case 17:
+            myDisplay.textDisplay("You will write the letter H.");
+            static_image(PRINT_H, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is a (H)and.");
+            static_image(hand, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter H.");
+            animated_image(ANIMATE_H, AH_length, color);
+            usleep(1000000);
+
+            result = "H";
+            
+            break;
+        case 18:
+            myDisplay.textDisplay("You will write the letter I.");
+            static_image(PRINT_I, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is (I)ce Cream.");
+            static_image(ice_cream, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter I.");
+            animated_image(ANIMATE_I, AI_length, color);
+            usleep(1000000);
+
+            result = "I";
+            
+            break;
+        case 19:
+            myDisplay.textDisplay("You will write the letter J.");
+            static_image(PRINT_J, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is a (J)acket.");
+            static_image(jacket, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter J.");
+            animated_image(ANIMATE_J, AJ_length, color);
+            usleep(1000000);
+
+            result = "J";
+            
+            break;
+        case 20:
+            myDisplay.textDisplay("You will write the letter K.");
+            static_image(PRINT_K, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is a (K)ey.");
+            static_image(key, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter K.");
+            animated_image(ANIMATE_K, AK_length, color);
+            usleep(1000000);
+
+            result = "K";
+            
+            break;
+        case 21:
+            myDisplay.textDisplay("You will write the letter L.");
+            static_image(PRINT_L, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is a (L)ight bulb.");
+            static_image(light_bulb, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter L.");
+            animated_image(ANIMATE_L, AL_length, color);
+            usleep(1000000);
+
+            result = "L";
+            
+            break;
+        case 22:
+            myDisplay.textDisplay("You will write the letter M.");
+            static_image(PRINT_M, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is a (M)ountain.");
+            static_image(mountain, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter M.");
+            animated_image(ANIMATE_M, AM_length, color);
+            usleep(1000000);
+
+            result = "M";
+            
+            break;
+        case 23:
+            myDisplay.textDisplay("You will write the letter N.");
+            static_image(PRINT_N, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is an (N)ecklace.");
+            static_image(necklace, color);
+            usleep(3000000);
+            clear_matrix();
+            myDisplay.clearDisplay();
+
+            myDisplay.textDisplay("This is how to write the");
+            myDisplay.textDisplay("letter N.");
+            animated_image(ANIMATE_N, AN_length, color);
+            usleep(1000000);
+
+            result = "N";
+            
+            break;
     }
+
+    return result;
 }
 
 // got x-dimension location of finger
@@ -217,13 +462,13 @@ int get_x(void){
         }
 
         if (x1 == 1){
-            return 31-2*i;
-        } else if (x2 == 1){
             return 2*i;
-        } else if (i==15){
-            return 32;
+        // } else if (x2 == 1){
+        //     return 31 - 2*i;
         }
     }
+
+    return 32;
 }
 
 // got y-dimension location of finger
@@ -241,13 +486,26 @@ int get_y(void){
         }
 
         if (y1 == 1){
-            return 31-2*i;
-        } else if (y2 == 1){
             return 2*i;
-        } else if (i==15){
-            return 32;
+        // } else if (y2 == 1){
+        //     return 31 - 2*i;
+        } 
+    }
+
+    return 32;
+}
+
+// test function for checking collectors
+void detect(void){
+    unsigned int i, val1;
+
+    for (i=0; i<16; i++){ 
+        val1 = digitalRead(100+i);
+        if (val1 == 0 && i == 8){
+            cout << "collector: " << 100+i << "\n";
         }
     }
+
 }
 
 int main(void){
@@ -291,13 +549,64 @@ int main(void){
     submit = 0;
     myDisplay.clearDisplay();
 
-    unsigned char prompts[] = {0};  // prompts that will be shown
+    unsigned char prompts[] = {0, 10};  // prompts that will be shown
     unsigned char pos = 0;  // control position in prompts array
 
     int x_coord;
     int y_coord;
+    int location;
+    string check;
 
+    int result = classify_image(PRINT_M);
+    cout << result << "\n";
     while (1){
+        // testing for chris
+        // check = prompt_selection(prompts[pos]);
+        // cout << check << "\n";
+        // // cout.flush();
+        // pos++;
+        // continue;
+
+        // testing for Maia
+
+        // detect();
+
+        // continue;
+
+        x_coord = get_x();
+        y_coord = 0;
+        color = 0;
+
+        // cout << x_coord << "\n";
+
+        // switch  or to and on the first conditional  || (y_coord < 32)
+        if ((x_coord < 32)){
+            if (x_coord < 16){
+                if(y_coord%2 == 0){
+                    location = 16*y_coord + x_coord;
+                } else {
+                    location = (16*y_coord) + (15 - x_coord);
+                }
+            } else {
+                if(y_coord%2 == 0){
+                    location = (512 + 16*y_coord) + (x_coord - 16);
+                } else {
+                    location = (512 + 16*y_coord) + (31 - x_coord);
+                }
+            }
+            if (USED_MATRIX[x_coord][y_coord] == 0){
+                USED_MATRIX[x_coord][y_coord] = 1;
+                update_matrix(location, color);
+            }
+
+        }
+
+
+        continue;
+
+        // end of Maia's testing
+
+
         // select a random color
         color = rand() % 7;
 
@@ -311,23 +620,46 @@ int main(void){
         myDisplay.textDisplay("Use the buttons to select");
         myDisplay.textDisplay("different colors!");
 
+        submit = 0;  // reset submit if user pressed it by accident
         // allows user to draw on the matrix
         while(1){
             if (submit){
-                // for now brak out of the loop
+                // for now break out of the loop
                 submit = 0;
                 break;
+                // ccompare with ML output
+                // if (check == ML_OUT){
+                //     //they passed
+                // } else {
+                //     //they failed
+                // }
             }
-            
-            // call detection function
+
             x_coord = get_x();
             y_coord = get_y();
 
-            // check if they pressed submit
-            
-
-            // within submit check if they are right or wrong
+            // switch  or to and on the first conditional
+            if ((x_coord < 32) || (y_coord < 32)){
+                if (y_coord < 16){
+                    if(x_coord%2 == 0){
+                        location = 16*x_coord + y_coord;
+                    } else {
+                        location = (16*x_coord) + (15 - y_coord);
+                    }
+                } else {
+                    if(x_coord%2 == 0){
+                        location = (512 + 16*x_coord) + (y_coord - 16);
+                    } else {
+                        location = (512 + 16*x_coord) + (31 - y_coord);
+                    }
+                }
+                update_matrix(location, color);
+                if (USED_MATRIX[x_coord][y_coord] == 0){
+                    USED_MATRIX[x_coord][y_coord] = 1;
+                }
+            }
         }
+
     }
 
 

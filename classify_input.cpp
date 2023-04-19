@@ -18,7 +18,7 @@ float interpolate(float x, float y, unsigned char a[32][32])
   int y2 = y1 + 1;
 
   float q11 = a[y1][x1];
-  float q12 = a[y2][x1];
+  float q12 = a[y2][x1]; 
   float q21 = a[y1][x2];
   float q22 = a[y2][x2];
 
@@ -105,7 +105,7 @@ void normalize(float image[28][28])
 int classify_image(unsigned char input_image[32][32])
 {
     // Load the tflite model
-    std::unique_ptr<tflite::FlatBufferModel> model = tflite::FlatBufferModel::BuildFromFile("../../models/classification/model45.tflite");
+    std::unique_ptr<tflite::FlatBufferModel> model = tflite::FlatBufferModel::BuildFromFile("/home/sdp19/tflite/models/classification/model45.tflite");
     if (!model)
     {
         std::cerr << "Failed to load model.\n";
@@ -186,10 +186,10 @@ int classify_image(unsigned char input_image[32][32])
     // Get a pointer to the output data buffer
     float *output_data = output_tensor->data.f;
 
-    for (int i = 0; i < output_size; i++)
-    {
-        printf("Output value %d: %f\n", i, output_data[i]);
-    }
+    // for (int i = 0; i < output_size; i++)
+    // {
+    //     printf("Output value %d: %f\n", i, output_data[i]);
+    // }
 
     // Find index of label with highest score
     float highest_score = output_tensor->data.f[0];
@@ -205,7 +205,7 @@ int classify_image(unsigned char input_image[32][32])
     }
 
     // Load the class list
-    std::ifstream class_list_file("../../models/classification/class_list.txt");
+    std::ifstream class_list_file("/home/sdp19/tflite/models/classification/class_list.txt");
     std::vector<std::string> class_list;
     std::string class_name;
     while (std::getline(class_list_file, class_name))

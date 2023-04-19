@@ -4,8 +4,8 @@ CC = g++
 # compiler flags
 # -Wall flag turns on compiler warnings
 CFLAGS = -Wall -w
-INCLUDES = -I/home/sdp19/rpi_ws281x
-LIBS= -lws2811 -lwiringPi -lm
+INCLUDES = -I/home/sdp19/rpi_ws281x -L/home/sdp19/tflite/tflite-dist/libs/linux_x64
+LIBS = -lws2811 -lwiringPi -lm -ldl -ltensorflowlite
 
 # building the file
 SOURCES = main.cpp display.cpp numbers.cpp upper.cpp lower.cpp sketches.cpp ssd1306.cpp classify_input.cpp
