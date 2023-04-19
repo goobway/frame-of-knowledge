@@ -11,7 +11,7 @@ app.post('/submitDrawing', (req, res) => {
     // Convert the base64-encoded drawing data to binary data
     const binaryImageData = Buffer.from(base64ImageData, 'base64');
 
-    // Process the binary drawing data (e.g., using TensorFlow.js)
+    // Process the binary drawing data (using TensorFlow.js)
     // ...
 
     res.sendStatus(200);

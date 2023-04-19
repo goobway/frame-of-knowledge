@@ -11,7 +11,7 @@ interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
-# Define a function to preprocess the input image.
+# Define function to preprocess the input image.
 def preprocess_image(image):
     # Convert the image to grayscale.
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -23,6 +23,7 @@ def preprocess_image(image):
     image = (image / 127.5) - 1.0
     # Reshape the image to match the input shape of the model.
     image = np.reshape(image, input_details[0]['shape'])
+    # print(image.shape)
     # Convert the image to a tensor and return it.
     return tf.convert_to_tensor(image, dtype=input_details[0]['dtype'])
 

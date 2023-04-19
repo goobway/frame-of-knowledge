@@ -1,13 +1,15 @@
-// app.js
 document.addEventListener('DOMContentLoaded', () => {
+    // Get the student progress canvas element
     const studentProgressCanvas = document.getElementById('student-progress');
 
+    // Define an array of student data objects
     const studentData = [
         { id: 'A', scores: [70, 75, 80, 85, 90, 95], borderColor: 'rgb(75, 192, 192)' },
         { id: 'B', scores: [60, 65, 70, 75, 80, 85], borderColor: 'rgb(255, 99, 132)' },
         { id: 'C', scores: [50, 55, 60, 65, 70, 75], borderColor: 'rgb(255, 205, 86)' }
     ];
 
+    // Map the student data to Chart.js datasets
     const datasets = studentData.map(student => ({
         label: `Student ${student.id}`,
         data: student.scores,
@@ -16,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tension: 0.1
     }));
 
+    // Create a new Chart.js chart for student progress
     const studentProgressChart = new Chart(studentProgressCanvas, {
         type: 'line',
         data: {
@@ -32,8 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
+    // Get the areas of improvement canvas element
     const areasImprovementCanvas = document.getElementById('areas-improvement-chart');
+
+    // Create a new Chart.js chart for areas of improvement
     const areasImprovementChart = new Chart(areasImprovementCanvas, {
         type: 'bar',
         data: {
@@ -56,16 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Submitted Drawings
+// Display submitted drawings
 document.addEventListener('DOMContentLoaded', () => {
-    // ... rest of the existing code
-
     // Get the drawings array from local storage
     const drawings = JSON.parse(localStorage.getItem('drawings')) || [];
 
     // Display each drawing in the submitted-drawings-container
     const submittedDrawingsContainer = document.getElementById('submitted-drawings-container');
     drawings.forEach(drawingData => {
+        // Create an image element for the drawing
         const drawingImg = document.createElement('img');
         drawingImg.src = `data:image/png;base64,${drawingData}`; // Include the MIME type and encoding
         drawingImg.classList.add('submitted-drawing'); // for applying CSS styles later
@@ -75,39 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.open(drawingImg.src, '_blank');
         });
 
+        // Append the image
         submittedDrawingsContainer.appendChild(drawingImg);
     });
 });
-
-function displaySubmittedDrawings() {
-    const drawings = JSON.parse(localStorage.getItem('drawings')) || [];
-    const drawingsContainer = document.getElementById('submitted-drawings');
-
-    drawingsContainer.innerHTML = '';
-
-    drawings.forEach((drawing, index) => {
-        const drawingElement = document.createElement('div');
-        drawingElement.classList.add('drawing-thumbnail');
-
-        const img = document.createElement('img');
-        img.src = 'data:image/png;base64,' + drawing.image;
-        img.alt = 'Submitted drawing ' + (index + 1);
-        img.onclick = () => {
-            window.location.href = `/drawing-info.html?index=${index}`;
-        };
-
-        const promptElement = document.createElement('p');
-        promptElement.innerText = drawing.prompt;
-
-        const accuracyElement = document.createElement('p');
-        accuracyElement.innerText = `Accuracy: ${drawing.accuracy}%`;
-
-        drawingElement.appendChild(img);
-        drawingElement.appendChild(promptElement);
-        drawingElement.appendChild(accuracyElement);
-
-        drawingsContainer.appendChild(drawingElement);
-    });
-}
-
-
