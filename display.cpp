@@ -47,7 +47,6 @@ ws2811_led_t dotcolors[] =
     0x00000020,  // blue
     0x00100010,  // purple
     0x00200010,  // pink
-    0xEEEEEEEE,  // white
 };
 
 // allows for the matrix to be turned on
