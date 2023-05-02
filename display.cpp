@@ -114,7 +114,9 @@ void animated_image(unsigned int sequence[], unsigned char length, unsigned char
 }
 
 // turn on LEDs from finger tracking
-void update_matrix(int location, unsigned char color){
+void update_matrix(int location, unsigned char color, int update){
     ledstring.channel[0].leds[location] = dotcolors[color];
-    ws2811_render(&ledstring);
+    if (update == 1) {
+        ws2811_render(&ledstring);
+    }
 }

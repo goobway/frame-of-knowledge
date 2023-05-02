@@ -8,7 +8,7 @@ INCLUDES = -I/home/sdp19/rpi_ws281x -L/home/sdp19/tflite/tflite-dist/libs/linux_
 LIBS = -lws2811 -lwiringPi -lm -ldl -ltensorflowlite -lcurl
 
 # building the file
-SOURCES = main.cpp display.cpp numbers.cpp upper.cpp lower.cpp sketches.cpp ssd1306.cpp classify_input.cpp client.cpp
+SOURCES = main.cpp display.cpp numbers.cpp upper.cpp lower.cpp sketches.cpp ssd1306.cpp client.cpp classify_input.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE = main
 

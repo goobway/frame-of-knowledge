@@ -13,7 +13,7 @@ size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
 }
 
 // Function to send data to the server
-void send_data_to_database(int studentId, const std::string &prompt, const std::string &classification, double confidence)
+void send_data_to_database(int studentId, const std::string &prompt, const std::string &classification, double confidence, unsigned char drawing[32][32])
 {
     CURL *curl;
     CURLcode res;
@@ -25,16 +25,28 @@ void send_data_to_database(int studentId, const std::string &prompt, const std::
 
     if (curl)
     {
+        // Convert the 2D matrix into a nested JSON array
+        json matrix_json = json::array();
+        for (int i = 0; i < 32; i++)
+        {
+            json row = json::array();
+            for (int j = 0; j < 32; j++)
+            {
+                row.push_back(drawing[i][j]);
+            }
+            matrix_json.push_back(row);
+        }
         // Create a JSON payload with the data
         json payload = {
             {"studentId", studentId},
             {"prompt", prompt},
             {"classification", classification},
-            {"confidence", confidence}};
+            {"confidence", confidence},
+            {"matrix", matrix_json}};
         std::string payload_str = payload.dump();
 
         // Set the server URL
-        std::string serverUrl = "http://192.168.0.35:3000/add";
+        std::string serverUrl = "http://172.31.70.84:3000/add";
 
         // Set curl options
         curl_easy_setopt(curl, CURLOPT_URL, serverUrl.c_str());
@@ -70,28 +82,28 @@ void send_data_to_database(int studentId, const std::string &prompt, const std::
     curl_global_cleanup();
 }
 
-int main()
-{
-    // Get the data from the user
-    std::cout << "Enter a student ID: ";
-    int studentId;
-    std::cin >> studentId;
+// int main()
+// {
+//     // Get the data from the user
+//     std::cout << "Enter a student ID: ";
+//     int studentId;
+//     std::cin >> studentId;
 
-    std::cout << "Enter a prompt: ";
-    std::string prompt;
-    std::cin.ignore();
-    std::getline(std::cin, prompt);
+//     std::cout << "Enter a prompt: ";
+//     std::string prompt;
+//     std::cin.ignore();
+//     std::getline(std::cin, prompt);
 
-    std::cout << "Enter a classification label: ";
-    std::string classification;
-    std::getline(std::cin, classification);
+//     std::cout << "Enter a classification label: ";
+//     std::string classification;
+//     std::getline(std::cin, classification);
 
-    std::cout << "Enter a confidence percentage: ";
-    double confidence;
-    std::cin >> confidence;
+//     std::cout << "Enter a confidence percentage: ";
+//     double confidence;
+//     std::cin >> confidence;
 
-    // Call the function to send the data to the server
-    send_data_to_database(studentId, prompt, classification, confidence);
+//     // Call the function to send the data to the server
+//     send_data_to_database(studentId, prompt, classification, confidence);
 
-    return 0;
-}
+//     return 0;
+// }

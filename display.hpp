@@ -8,7 +8,7 @@ void clear_matrix(void);
 
 void static_image(unsigned char mat[][32], unsigned char color);
 void animated_image(unsigned int sequence[], unsigned char length, unsigned char color);
-void update_matrix(int location, unsigned char color);
+void update_matrix(int location, unsigned char color, int update);
 
 
 #endif

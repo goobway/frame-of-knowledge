@@ -2,221 +2,352 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
 #include <cstdio>
+#include <string>
+#include <memory>
+#include <cmath>
+
 #include "tensorflow/lite/interpreter.h"
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/model.h"
 #include "tensorflow/lite/optional_debug_tools.h"
 
-// Helper functions for preprocessing input
-float interpolate(float x, float y, unsigned char a[32][32])
+// Author: Calista Greenway
+// Project: Classification Model Usage in C++
+// Last Updated: April 27, 2023
+
+// ---- HELPER FUNCTIONS ----
+
+// Function to read text file containing class labels
+std::vector<std::string> read_labels(const std::string &filename)
 {
-  int x1 = static_cast<int>(x);
-  int x2 = x1 + 1;
-  int y1 = static_cast<int>(y);
-  int y2 = y1 + 1;
-
-  float q11 = a[y1][x1];
-  float q12 = a[y2][x1]; 
-  float q21 = a[y1][x2];
-  float q22 = a[y2][x2];
-
-  return (q11 * (x2 - x) * (y2 - y) +
-          q21 * (x - x1) * (y2 - y) +
-          q12 * (x2 - x) * (y - y1) +
-          q22 * (x - x1) * (y - y1));
-}
-
-void resize_and_normalize(unsigned char a[32][32], float b[28][28])
-{
-  float scale_x = 32.0 / 28.0;
-  float scale_y = 32.0 / 28.0;
-
-  for (int i = 0; i < 28; ++i)
+  std::ifstream label_file(filename);
+  if (!label_file)
   {
-    for (int j = 0; j < 28; ++j)
-    {
-      float x = j * scale_x;
-      float y = i * scale_y;
-      b[i][j] = interpolate(x, y, a) / 255.0;
-    }
+    std::cerr << "Unable to open label file: " << filename << std::endl;
+    exit(1);
   }
+  std::vector<std::string> labels;
+  std::string line;
+  while (std::getline(label_file, line))
+  {
+    labels.push_back(line);
+  }
+  return labels;
 }
 
-const int KERNEL_SIZE = 3;
-const float GAUSSIAN_KERNEL[KERNEL_SIZE][KERNEL_SIZE] = {
-    {1.0 / 16, 2.0 / 16, 1.0 / 16},
-    {2.0 / 16, 4.0 / 16, 2.0 / 16},
-    {1.0 / 16, 2.0 / 16, 1.0 / 16}};
-
-void apply_gaussian_blur(float image[28][28], float result[28][28])
+// Function to pad matrix drawing with extra 1s
+void thicken_drawing(std::vector<std::vector<float>> &matrix)
 {
-  int offset = KERNEL_SIZE / 2;
-  for (int y = 0; y < 28; ++y)
+  // Create a temporary matrix to store the updated values to avoid interference with the original matrix during processing.
+  std::vector<std::vector<float>> temp_matrix = matrix;
+
+  // Get the number of rows and columns in the matrix.
+  int rows = matrix.size();
+  int cols = matrix[0].size();
+
+  // Iterate through each element of the matrix.
+  for (int i = 0; i < rows; ++i)
   {
-    for (int x = 0; x < 28; ++x)
+    for (int j = 0; j < cols; ++j)
     {
-      float sum = 0.0;
-      for (int ky = -offset; ky <= offset; ++ky)
+      // If the current element is 1.0, update the surrounding cells.
+      if (matrix[i][j] == 1.0)
       {
-        for (int kx = -offset; kx <= offset; ++kx)
+        // Iterate through the 8 neighboring cells.
+        for (int k = -1; k <= 1; ++k)
         {
-          int iy = y + ky;
-          int ix = x + kx;
-          if (iy >= 0 && iy < 28 && ix >= 0 && ix < 28)
+          for (int l = -1; l <= 1; ++l)
           {
-            sum += image[iy][ix] * GAUSSIAN_KERNEL[ky + offset][kx + offset];
+            // Calculate the row and column indices of the neighboring cell.
+            int new_i = i + k;
+            int new_j = j + l;
+
+            // Check if the neighboring cell indices are within the matrix bounds.
+            if (new_i >= 0 && new_i < rows && new_j >= 0 && new_j < cols)
+            {
+              // Set the value of the neighboring cell in the temp_matrix to 1.0.
+              temp_matrix[new_i][new_j] = 1.0;
+            }
           }
         }
       }
-      result[y][x] = sum;
+    }
+  }
+  // Replace the original matrix with the updated temp_matrix.
+  matrix = temp_matrix;
+}
+
+// Function to generate Gaussian kernel
+const int KERNEL_SIZE = 5;
+const double SIGMA = 1.0;
+
+void generate_gaussian_kernel(std::vector<std::vector<double>> &kernel)
+{
+  double sum = 0.0;
+  double r, s = 2.0 * SIGMA * SIGMA;
+
+  // Generate the kernel values
+  for (int x = -(KERNEL_SIZE / 2); x <= KERNEL_SIZE / 2; x++)
+  {
+    for (int y = -(KERNEL_SIZE / 2); y <= KERNEL_SIZE / 2; y++)
+    {
+      r = std::sqrt(x * x + y * y);
+      kernel[x + (KERNEL_SIZE / 2)][y + (KERNEL_SIZE / 2)] = (std::exp(-(r * r) / s)) / (M_PI * s);
+      sum += kernel[x + (KERNEL_SIZE / 2)][y + (KERNEL_SIZE / 2)];
+    }
+  }
+
+  // Normalize the kernel
+  for (int i = 0; i < KERNEL_SIZE; ++i)
+  {
+    for (int j = 0; j < KERNEL_SIZE; ++j)
+    {
+      kernel[i][j] /= sum;
     }
   }
 }
 
-void normalize(float image[28][28])
+// Function to apply Gaussian blur on the input matrix
+void apply_gaussian_blur(std::vector<std::vector<float>> &input_matrix, std::vector<std::vector<float>> &blurred_matrix)
 {
-  float max_val = 0.0;
-  for (int y = 0; y < 28; ++y)
+  int rows = input_matrix.size();
+  int cols = input_matrix[0].size();
+
+  // Generate the Gaussian kernel
+  std::vector<std::vector<double>> kernel(KERNEL_SIZE, std::vector<double>(KERNEL_SIZE));
+  generate_gaussian_kernel(kernel);
+
+  // Apply the Gaussian kernel on the input matrix
+  for (int i = 0; i < rows; ++i)
   {
-    for (int x = 0; x < 28; ++x)
+    for (int j = 0; j < cols; ++j)
     {
-      if (image[y][x] > max_val)
+      double sum = 0.0;
+
+      // Multiply the kernel with the input matrix in the neighborhood of the current pixel
+      for (int x = -(KERNEL_SIZE / 2); x <= KERNEL_SIZE / 2; x++)
       {
-        max_val = image[y][x];
-      }
-    }
-  }
-
-  if (max_val > 0.0)
-  {
-    for (int y = 0; y < 28; ++y)
-    {
-      for (int x = 0; x < 28; ++x)
-      {
-        image[y][x] /= max_val;
-      }
-    }
-  }
-}
-
-// Main program for classifying input matrix, reference in main.cpp
-int classify_image(unsigned char input_image[32][32])
-{
-    // Load the tflite model
-    std::unique_ptr<tflite::FlatBufferModel> model = tflite::FlatBufferModel::BuildFromFile("/home/sdp19/tflite/models/classification/model45.tflite");
-    if (!model)
-    {
-        std::cerr << "Failed to load model.\n";
-        return -1;
-    }
-
-    // Create an interpreter and allocate memory for input and output tensors
-    tflite::ops::builtin::BuiltinOpResolver resolver;
-    tflite::InterpreterBuilder builder(*model, resolver);
-    std::unique_ptr<tflite::Interpreter> interpreter;
-    builder(&interpreter);
-    if (!interpreter)
-    {
-        std::cerr << "Failed to build interpreter.\n";
-        return -1;
-    }
-
-    // Allocate memory for input and output tensors
-    interpreter->AllocateTensors();
-    if (interpreter->AllocateTensors() != kTfLiteOk)
-    {
-        std::cerr << "Failed to allocate tensors.\n";
-        return -1;
-    }
-
-    // Preprocess the input
-    float resized[28][28];
-    float blurred[28][28];
-
-    resize_and_normalize(input_image, resized);
-    apply_gaussian_blur(resized, blurred);
-    normalize(blurred);
-
-    // Print out the preprocessed input vector
-    // for (int i = 0; i < 28; ++i)
-    // {
-    //     for (int j = 0; j < 28; ++j)
-    //     {
-    //         std::cout << blurred[i][j] << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
-
-    // Get the input tensor
-    TfLiteTensor *input_tensor = interpreter->input_tensor(0);
-
-    // Get the dimensions of the input tensor
-    int input_size = input_tensor->dims->data[1] * input_tensor->dims->data[2];
-
-    // Get a pointer to the input data buffer
-    float *input_data_mem = input_tensor->data.f;
-
-    // Populate the allocated memory with the input data
-    for (int i = 0; i < 28; ++i)
-    {
-        for (int j = 0; j < 28; ++j)
+        for (int y = -(KERNEL_SIZE / 2); y <= KERNEL_SIZE / 2; y++)
         {
-            input_data_mem[i * 28 + j] = blurred[i][j];
+          int current_row = i + x;
+          int current_col = j + y;
+
+          // Check if the current position is inside the input matrix
+          if (current_row >= 0 && current_row < rows && current_col >= 0 && current_col < cols)
+          {
+            sum += input_matrix[current_row][current_col] * kernel[x + (KERNEL_SIZE / 2)][y + (KERNEL_SIZE / 2)];
+          }
+        }
+      }
+
+      // Store the result in the blurred matrix
+      blurred_matrix[i][j] = static_cast<float>(sum);
+    }
+  }
+}
+
+// Fill the gaps!!
+// Apply dilation to the input matrix
+void dilate(const std::vector<std::vector<float>>& input, std::vector<std::vector<float>>& output, float threshold) {
+    int rows = input.size();
+    int cols = input[0].size();
+
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            float max_val = 0;
+            for (int x = -1; x <= 1; ++x) {
+                for (int y = -1; y <= 1; ++y) {
+                    int new_i = i + x;
+                    int new_j = j + y;
+                    if (new_i >= 0 && new_i < rows && new_j >= 0 && new_j < cols) {
+                        max_val = std::max(max_val, input[new_i][new_j]);
+                    }
+                }
+            }
+            output[i][j] = max_val;
         }
     }
+}
 
-    // Copy the input data from the allocated memory to the input tensor
-    memcpy(input_tensor->data.f, input_data_mem, input_size * sizeof(float));
+// Apply erosion to the input matrix
+void erode(const std::vector<std::vector<float>>& input, std::vector<std::vector<float>>& output, float threshold) {
+    int rows = input.size();
+    int cols = input[0].size();
 
-    // Run the inference using the interpreter
-    TfLiteStatus invoke_status = interpreter->Invoke();
-    if (invoke_status != kTfLiteOk)
-    {
-        printf("Error invoking the interpreter");
-    }
-
-    // Get the output tensor
-    TfLiteTensor *output_tensor = interpreter->output_tensor(0);
-
-    // Get the dimensions for the output tensor
-    int output_size = output_tensor->dims->data[1];
-
-    // Get a pointer to the output data buffer
-    float *output_data = output_tensor->data.f;
-
-    // for (int i = 0; i < output_size; i++)
-    // {
-    //     printf("Output value %d: %f\n", i, output_data[i]);
-    // }
-
-    // Find index of label with highest score
-    float highest_score = output_tensor->data.f[0];
-    int predicted_class_index = 0;
-    for (int i = 1; i < 74; ++i)
-    {
-        if (output_tensor->data.f[i] >= highest_score)
-        {
-            highest_score = output_tensor->data.f[i];
-            // std::cout << "Highest score: " << highest_score << " at index " << i << std::endl;
-            predicted_class_index = i;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            float min_val = 1;
+            for (int x = -1; x <= 1; ++x) {
+                for (int y = -1; y <= 1; ++y) {
+                    int new_i = i + x;
+                    int new_j = j + y;
+                    if (new_i >= 0 && new_i < rows && new_j >= 0 && new_j < cols) {
+                        min_val = std::min(min_val, input[new_i][new_j]);
+                    }
+                }
+            }
+            output[i][j] = min_val;
         }
     }
-
-    // Load the class list
-    std::ifstream class_list_file("/home/sdp19/tflite/models/classification/class_list.txt");
-    std::vector<std::string> class_list;
-    std::string class_name;
-    while (std::getline(class_list_file, class_name))
-    {
-        class_list.push_back(class_name);
-    }
-
-    // Determine predicted class
-    // std::cout << predicted_class_index << std::endl;
-    std::string predicted_class = class_list[predicted_class_index];
-    // std::cout << "Predicted class: " << predicted_class << std::endl;
-
-    return predicted_class_index;
 }
+
+// Fill gaps in the input matrix using dilation followed by erosion
+void fill_gaps(std::vector<std::vector<float>>& input, float threshold) {
+    std::vector<std::vector<float>> temp(input.size(), std::vector<float>(input[0].size()));
+    std::vector<std::vector<float>> output(input.size(), std::vector<float>(input[0].size()));
+
+    // Apply dilation
+    dilate(input, temp, threshold);
+
+    // Apply erosion
+    erode(temp, output, threshold);
+
+    // Update input matrix with the result
+    input.swap(output);
+}
+
+// --- MAIN PROGRAM ---
+
+float classify_image(unsigned char input_image[32][32])
+{
+  // Load the tflite preprocessing model
+  std::unique_ptr<tflite::FlatBufferModel> preproc = tflite::FlatBufferModel::BuildFromFile("/home/sdp19/tflite/models/classification/preproc49.tflite");
+  if (!preproc)
+  {
+    std::cerr << "Failed to load preproc model.\n";
+    return -1;
+  }
+
+  // Load the tflite classification model
+  std::unique_ptr<tflite::FlatBufferModel> model = tflite::FlatBufferModel::BuildFromFile("/home/sdp19/tflite/models/classification/model49.tflite");
+  if (!model)
+  {
+    std::cerr << "Failed to load classification model.\n";
+    return -1;
+  }
+
+  // Create an interpreter for each model
+  tflite::ops::builtin::BuiltinOpResolver resolver;
+  std::unique_ptr<tflite::Interpreter> interpreter1;
+  tflite::InterpreterBuilder(*preproc, resolver)(&interpreter1);
+  std::unique_ptr<tflite::Interpreter> interpreter2;
+  tflite::InterpreterBuilder(*model, resolver)(&interpreter2);
+
+  // Allocate memory for input and output tensors
+  interpreter1->AllocateTensors();
+  interpreter2->AllocateTensors();
+
+  // Prepare the input for the preproc model
+  // unsigned char input[32][32]; ---> replace "input_image" with test unsigned char name
+  std::vector<std::vector<float>> input_data1(32, std::vector<float>(32));
+  for (size_t i = 0; i < 32; ++i)
+  {
+    for (size_t j = 0; j < 32; ++j)
+    {
+      input_data1[i][j] = static_cast<float>(input_image[i][j]);
+    }
+  }
+
+  // Print drawing (before processing)
+  std::cout << "INPUT DRAWING: " << std::endl;
+  for (int i = 0; i < 32; ++i)
+  {
+    for (int j = 0; j < 32; ++j)
+    {
+      std::cout << input_data1[i][j] << " ";
+    }
+    std::cout << std::endl;
+  }
+
+  // Fill gaps and thicken drawing
+  fill_gaps(input_data1, 0.5);
+  thicken_drawing(input_data1);
+
+  // Print drawing
+  std::cout << "\nFILLED DRAWING: " << std::endl;
+  for (int i = 0; i < 32; ++i)
+  {
+    for (int j = 0; j < 32; ++j)
+    {
+      std::cout << input_data1[i][j] << " ";
+    }
+    std::cout << std::endl;
+  }
+
+  // Blur drawing
+  std::vector<std::vector<float>> blurred_matrix(32, std::vector<float>(32));
+  apply_gaussian_blur(input_data1, blurred_matrix);
+
+  // Turn into 1D vector
+  std::vector<float> input_data1_1D;
+  input_data1_1D.reserve(32 * 32);
+
+  for (size_t i = 0; i < 32; ++i)
+  {
+    for (size_t j = 0; j < 32; ++j)
+    {
+      input_data1_1D.push_back(blurred_matrix[i][j]);
+    }
+  }
+
+  // Copy input data to memory
+  float *input1 = interpreter1->typed_input_tensor<float>(0);
+  std::copy(input_data1_1D.begin(), input_data1_1D.end(), input1);
+
+  // Invoke the preproc model
+  interpreter1->Invoke();
+
+  // Get the output of the preproc model and use it as input for the second
+  float *output1 = interpreter1->typed_output_tensor<float>(0);
+  int output_size1 = interpreter1->output_tensor(0)->bytes / sizeof(float);
+  float *input2 = interpreter2->typed_input_tensor<float>(0);
+  std::copy(output1, output1 + output_size1, input2);
+
+  // Invoke the classification model
+  interpreter2->Invoke();
+
+  // Get the output of the classification model and obtain the label
+  float *output2 = interpreter2->typed_output_tensor<float>(0);
+  int output_size2 = interpreter2->output_tensor(0)->bytes / sizeof(float);
+  int classification_index = std::distance(output2, std::max_element(output2, output2 + output_size2));
+
+  // Read values from output tensor
+  std::vector<std::pair<int, float>> output_values;
+  for (int i = 0; i < output_size2; i++)
+  {
+    output_values.push_back(std::make_pair(i, output2[i]));
+  }
+
+  // Sort the output_values vector in descending order based on output values
+  std::sort(output_values.begin(), output_values.end(), [](const std::pair<int, float> &a, const std::pair<int, float> &b)
+            { return a.second > b.second; });
+
+  // Read the labels from the .txt file
+  std::vector<std::string> labels = read_labels("/home/sdp19/tflite/models/classification/class_list.txt");
+
+  // Print the top 5 values and their corresponding labels
+  for (int i = 0; i < 5; i++)
+  {
+    std::cout << "Output value " << output_values[i].first << ": " << output_values[i].second << std::endl;
+    std::string classification_label = labels[output_values[i].first];
+    std::cout << "Classification label: " << classification_label << "\n"
+              << std::endl;
+  }
+
+  // Generate float value containing label index and confidence percentage
+  float output_number = output_values[0].first + output_values[0].second;
+
+  return output_number;
+}
+
+// int main()
+// {
+//   float output_number = classify_image(USED_MATRIX);
+//   float label_index_f, confidence;
+
+//   confidence = std::modf(output_number, &label_index_f);
+//   int label_index = static_cast<int>(label_index_f);
+
+//   return 0;
+// }
